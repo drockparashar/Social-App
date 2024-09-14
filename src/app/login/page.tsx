@@ -1,16 +1,14 @@
 "use client"
 import { useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string>("")
   const [username,setUsername]=useState<string>("");
   const [password,setPassword]=useState<string>("");
 
@@ -22,7 +20,6 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(''); // Reset error message
 
     try {
       const res = await fetch('/api/login', {
@@ -33,17 +30,13 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await res.json();
 
       if (res.status === 200) {
         // Successful login, redirect to homepage
         router.push('/dashboard');
-      } else {
-        // Show error message from backend
-        setError(data.message);
       }
     } catch (error) {
-      setError('Something went wrong. Please try again.');
+      console.log(error)
     }
 
     setIsLoading(false);
